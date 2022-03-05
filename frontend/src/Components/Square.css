@@ -1,0 +1,59 @@
+img {
+    width: 80px;
+    height: 80px;
+}
+
+/*img:hover {*/
+/*    background-color: aqua;*/
+/*}*/
+
+.WhiteSquare {
+    background-color: #F8DFA1;
+}
+
+.BlackSquare {
+    background-color: #773f1a;
+}
+
+.SelectedSquare {
+    background-color: blueviolet;
+}
+
+.CaptureSquare {
+    width: 40px;
+    height: 40px;
+    background-color: gray;
+}
+
+.MoveMarker {
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: green;
+    position: absolute;
+    opacity: 0.5;
+}
+
+.CaptureMarker {
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    opacity: 0.5;
+}
+
+.CheckMarker {
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: crimson;
+    position: absolute;
+    opacity: 0.8;
+}

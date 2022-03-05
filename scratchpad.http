@@ -1,0 +1,23 @@
+POST http://localhost:3001/api/v1/game/start
+
+###
+
+GET http://localhost:3001/api/v1/game/cf1c1ab1-8b82-4c4c-aab8-f18f263540a4/state
+
+###
+
+
+POST http://localhost:3001/api/v1/game/96b696f1-0cc1-404f-b875-63dc417ad6c8/move
+Content-Type: application/json
+
+{
+  "nextTurnNumber": 2,
+  "nextTurnColour": "black",
+  "playerId": "fef9ef7c-1fdb-484a-acd7-ecb71832ca3d",
+  "1playerId": "873f5671-239e-420a-8a56-be85d4a6fa36",
+  "oldSquareId": "E2",
+  "newSquareId": "E4",
+  "promotionPiece": {"colour": "white", "value": "Pawn", "hasMoved":  false}
+}
+
+###

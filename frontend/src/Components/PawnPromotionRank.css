@@ -1,0 +1,19 @@
+.PromotionSquare:hover {
+    background-color: lightgray;
+}
+
+.PromotionSquare {
+    width: 60px;
+    height: 60px;
+    background-color: gray;
+}
+
+.PromotionRank {
+    height: 60px;
+    border: 10px solid black;
+    border-radius: 15px;
+    margin-top: 40px;
+    margin-left: 40px;
+    position: absolute;
+    display: inline;
+}
