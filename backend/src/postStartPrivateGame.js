@@ -1,4 +1,3 @@
-import {v4 as uuidv4} from "uuid";
 import {DynamoDBClient, PutItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall} from "@aws-sdk/util-dynamodb";
 import randomWords from "random-words"
@@ -10,11 +9,9 @@ export async function postStartPrivateGame(playerId, playerColour) {
 
     let allowWhiteOpponents = playerColour === "either" || playerColour === "black"
     let allowBlackOpponents = playerColour === "either" || playerColour === "white"
-    let newGameId = uuidv4()
-    let newGameCode = randomWords({exactly: 5, join: "-", maxLength: 7})
+    let newGameId = randomWords({exactly: 5, join: "-"})
 
     let newQueuedGame = { // TODO - Add timestamp here, so I can clear down old queued games
-        gameCode: newGameCode,
         gameId: newGameId,
         allowWhite: allowWhiteOpponents,
         allowBlack: allowBlackOpponents,
@@ -27,9 +24,6 @@ export async function postStartPrivateGame(playerId, playerColour) {
 
     return {
         statusCode: 200,
-        responseBody: {
-            gameId: newGameId,
-            gameCode: newGameCode
-        }
+        responseBody: {gameId: newGameId}
     }
 }

@@ -8,8 +8,7 @@
     "@aws-sdk/util-dynamodb": "^3.53.0",
     "random-words": "^1.1.2",
     "cors": "^2.8.5",
-    "express": "^4.17.3",
-    "uuid": "^8.3.2"
+    "express": "^4.17.3"
   },
   "scripts": {
     "start": "node local_app.js"

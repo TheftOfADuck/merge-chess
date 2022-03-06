@@ -26,9 +26,9 @@ class NewGameWidget extends React.Component {
     render() {
         return (
             <>
-                {this.props.gameCode ?
+                {this.props.gameId ?
                     <>
-                        <p><strong>Invite code:</strong> {this.props.gameCode}</p>
+                        <p><strong>Game ID:</strong> {this.props.gameId}</p>
                     </> :
                     <>
                         <div>
@@ -52,7 +52,7 @@ class NewGameWidget extends React.Component {
                                     <input type="radio" value="either" name="colour" defaultChecked/>Either<br/>
                                     <input type="radio" value="white" name="colour"/>White<br/>
                                     <input type="radio" value="black" name="colour"/>Black<br/>
-                                    <label htmlFor="gameCode">Game Code: </label><input id="gameCode"/>
+                                    <label htmlFor="gameId">Game ID: </label><input id="gameId"/>
                                     <input type="submit" value="Join"/>
                                 </form>
                             </fieldset>

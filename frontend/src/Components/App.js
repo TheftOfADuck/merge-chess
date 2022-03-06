@@ -4,7 +4,6 @@ import CaptureRow from './CaptureRow'
 import {ValidMovesHelper} from "shared/src/validMovesHelper";
 import {v4 as uuidv4} from 'uuid';
 import NewGameWidget from "./NewGameWidget";
-import randomWords from "random-words";
 
 class App extends React.Component {
 
@@ -54,14 +53,14 @@ class App extends React.Component {
             .then(result => this.updateState(result))
     }
 
-    joinPrivateGame = (colour, gameCode) => {
+    joinPrivateGame = (colour, gameId) => {
         fetch(`http://localhost:3001/api/v1/game/join-private`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({opponentColour: colour, gameCode: gameCode, playerId: this.state.playerId})
+            body: JSON.stringify({opponentColour: colour, gameId: gameId, playerId: this.state.playerId})
         })
             .then(result => result.json())
             .then(result => this.updateState(result))
@@ -239,7 +238,6 @@ class App extends React.Component {
                     joinPrivateGame={this.joinPrivateGame}
                     createPrivateGame={this.createPrivateGame}
                     gameId={this.state.gameId}
-                    gameCode={this.state.gameCode}
                     />
                 {this.state.gameId !== null && this.state.gameStatus !== "started" ? <p>Waiting for second player</p> : null}
                 <CaptureRow capturedPieces={this.state.playerColour === "white" ? this.state.blackCaptures : this.state.whiteCaptures}/>

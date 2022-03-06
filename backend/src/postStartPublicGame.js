@@ -1,14 +1,14 @@
-import {v4 as uuidv4} from "uuid";
 import {ValidMovesHelper} from "shared/src/validMovesHelper.js";
 import {DynamoDBClient, ScanCommand, PutItemCommand, DeleteItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
+import randomWords from "random-words";
 
 const GAME_TABLE = "merge-chess-games"
 const QUEUE_TABLE = "merge-chess-public-queue"
 
 
 export async function queueNewGame(client, playerId, allowWhiteOpponents, allowBlackOpponents) {
-    let newGameId = uuidv4()
+    let newGameId = randomWords({exactly: 5, join: "-"})
     let newQueuedGame = { // TODO - Add timestamp here, so I can clear down old queued games
         gameId: newGameId,
         allowWhite: allowWhiteOpponents,
