@@ -1,10 +1,10 @@
 import {v4 as uuidv4} from "uuid";
 import {ValidMovesHelper} from "shared/src/validMovesHelper.js";
-import {DynamoDBClient, ScanCommand, PutItemCommand, GetItemCommand, DeleteItemCommand} from "@aws-sdk/client-dynamodb";
+import {DynamoDBClient, ScanCommand, PutItemCommand, DeleteItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
 
 const GAME_TABLE = "merge-chess-games"
-const PUBLIC_QUEUE_TABLE = "merge-chess-public-queue"
+const QUEUE_TABLE = "merge-chess-public-queue"
 
 
 export async function queueNewGame(client, playerId, allowWhiteOpponents, allowBlackOpponents) {
@@ -16,21 +16,19 @@ export async function queueNewGame(client, playerId, allowWhiteOpponents, allowB
         initiatingPlayer: playerId
     }
     await client.send(new PutItemCommand({
-        TableName: PUBLIC_QUEUE_TABLE,
+        TableName: QUEUE_TABLE,
         Item: marshall(newQueuedGame)
     }))
-
-    console.log("Queued game:", newQueuedGame)
     return newGameId
 }
 
-export async function postStartGame(playerId, playerColour) {
+export async function postStartPublicGame(playerId, playerColour) {
     let allowWhiteOpponents = playerColour === "either" || playerColour === "black"
     let allowBlackOpponents = playerColour === "either" || playerColour === "white"
     const client = new DynamoDBClient({region: "eu-west-2"})
 
     // TODO - Make this a query rather than scan
-    let scanResults = await client.send(new ScanCommand({TableName: PUBLIC_QUEUE_TABLE}))
+    let scanResults = await client.send(new ScanCommand({TableName: QUEUE_TABLE}))
     if (scanResults.Count === 0) {
         return {
             statusCode: 200,
@@ -44,7 +42,6 @@ export async function postStartGame(playerId, playerColour) {
             if ((!queuedGame.allowWhite && playerColour === "white") || (!queuedGame.allowBlack && playerColour === "black")) {
                 continue
             }
-            console.log("Retrieved game from queue:", queuedGame)
 
             // Decide how to assign the white and black colours
             let playerConfig = {white: null, black: null}
@@ -68,7 +65,7 @@ export async function postStartGame(playerId, playerColour) {
 
             // Remove this game from the queue
             await client.send(new DeleteItemCommand({
-                TableName: PUBLIC_QUEUE_TABLE,
+                TableName: QUEUE_TABLE,
                 Key: marshall({gameId: queuedGame.gameId})
             }))
 

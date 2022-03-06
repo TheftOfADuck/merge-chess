@@ -4,6 +4,7 @@ import CaptureRow from './CaptureRow'
 import {ValidMovesHelper} from "shared/src/validMovesHelper";
 import {v4 as uuidv4} from 'uuid';
 import NewGameWidget from "./NewGameWidget";
+import randomWords from "random-words";
 
 class App extends React.Component {
 
@@ -233,9 +234,13 @@ class App extends React.Component {
         return (
             <>
                 <h1>Merge Chess</h1>
-                {this.state.gameId === null || this.state.checkmate ? <NewGameWidget joinPublicGame={this.joinPublicGame} /> : null}
-                <p>Game ID: {this.state.gameId}</p>
-                <p>Player ID: {this.state.playerId}</p>
+                <NewGameWidget
+                    joinPublicGame={this.joinPublicGame}
+                    joinPrivateGame={this.joinPrivateGame}
+                    createPrivateGame={this.createPrivateGame}
+                    gameId={this.state.gameId}
+                    gameCode={this.state.gameCode}
+                    />
                 {this.state.gameId !== null && this.state.gameStatus !== "started" ? <p>Waiting for second player</p> : null}
                 <CaptureRow capturedPieces={this.state.playerColour === "white" ? this.state.blackCaptures : this.state.whiteCaptures}/>
                 <Board

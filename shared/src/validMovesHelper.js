@@ -9,6 +9,7 @@ export class ValidMovesHelper {
         blackCaptures: [], // Array of pieces captured by the white player
         attackedKing: null, // squareId of the king currently in check. Used to highlight the cell on the next turn
         gameId: null, // Unique ID for this game. Used for matchmaking / maintaining state server side
+        gameCode: null, // Invite code for the current game. Only used for private games
         gameStatus: "waiting",
         activePieces: {
             A1: {colour: "white", value: "Rook", hasMoved: false},
