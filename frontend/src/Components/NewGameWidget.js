@@ -11,7 +11,6 @@ class NewGameWidget extends React.Component {
         }
     }
 
-
     test() {
         let words = []
         for (let i = 0; i < 1000000; i++) {
@@ -22,16 +21,14 @@ class NewGameWidget extends React.Component {
     }
 
     queueGame = (event) => {
+        event.preventDefault()
         let colourChoice = [...event.target].filter(x => x.name === "colour").filter(x => x.checked)[0].value
         let privateGame = [...event.target].filter(x => x.name === "privateGame")[0].checked
 
         if (privateGame) {
-
         } else {
-
+            this.props.joinPublicGame(colourChoice)
         }
-        this.props.newGame()
-        event.preventDefault()
     }
 
 

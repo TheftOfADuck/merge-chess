@@ -18,7 +18,7 @@ class App extends React.Component {
         this.state = Object.assign({
             // Client-side only state. The backend doesn't know these
             playerId: playerId,
-            playerColour: "white",
+            playerColour: null,
             validMoves: [], // Array of squares the currently selected piece can move to
             selectedPiece: null, // Piece selected by user's first click
             selectedSquare: null, // Square ID selected b user's first click
@@ -34,7 +34,7 @@ class App extends React.Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({opponentColour: colour, playerId: this.state.playerId})
+            body: JSON.stringify({playerColour: colour, playerId: this.state.playerId})
         })
             .then(result => result.json())
             .then(result => this.updateState(result))
@@ -67,16 +67,9 @@ class App extends React.Component {
     }
 
     getGameState = () => {
-        fetch(`http://localhost:3001/api/v1/game/${this.state.gameId}/state`)
+        fetch(`http://localhost:3001/api/v1/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
             .then(result => result.json())
-            .then(result => {
-                // Only update the game state when the server response is later than the client state
-                if ((this.state.turnColour === "white" && result.turnColour === "black" && this.state.turnNumber === result.turnNumber)
-                    || this.state.turnColour < result.turnColour
-                    || this.state.gameStatus !== result.gameStatus) {
-                    this.updateState(result)
-                }
-            })
+            .then(result => this.updateState(result)) // TODO - Fix rubber banding caused by old state from backend being applied
     }
 
     postMove = (requestBody) => {
@@ -240,7 +233,7 @@ class App extends React.Component {
         return (
             <>
                 <h1>Merge Chess</h1>
-                {this.state.gameId === null || this.state.checkmate ? <NewGameWidget newGame={this.joinPublicGame} /> : null}
+                {this.state.gameId === null || this.state.checkmate ? <NewGameWidget joinPublicGame={this.joinPublicGame} /> : null}
                 <p>Game ID: {this.state.gameId}</p>
                 <p>Player ID: {this.state.playerId}</p>
                 {this.state.gameId !== null && this.state.gameStatus !== "started" ? <p>Waiting for second player</p> : null}

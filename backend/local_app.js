@@ -12,15 +12,16 @@ app.use(cors())
 // aws dynamodb create-table --attribute-definitions=AttributeName=gameId,AttributeType=S --table-name merge-chess-queue --key-schema AttributeName=gameId,KeyType=HASH --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000
 // aws dynamodb create-table --attribute-definitions=AttributeName=gameId,AttributeType=S --table-name merge-chess-games --key-schema AttributeName=gameId,KeyType=HASH --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000
 
-app.post("/api/v1/player/:playerId/queue", (req, res) => {
-    postStartGame(req.params.playerId).then(x=> {
+app.post("/api/v1/game/join-public", (req, res) => {
+    postStartGame(req.body.playerId, req.body.playerColour).then(x=> {
+        console.log(x)
         res.status(x.statusCode)
         res.send(x.responseBody)
     })
 })
 
 app.get("/api/v1/game/:gameId/state", (req, res) => {
-    getGameState(req.params.gameId).then(x => {
+    getGameState(req.params.gameId, req.query.playerId).then(x => {
         res.status(x.statusCode)
         res.send(x.responseBody)
     })
