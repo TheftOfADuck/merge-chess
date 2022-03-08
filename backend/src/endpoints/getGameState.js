@@ -1,32 +1,35 @@
 import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
 
-const GAME_TABLE = "merge-chess-games"
-const PUBLIC_QUEUE_TABLE = "merge-chess-public-queue"
-
 export async function getGameState(gameId, playerId) {
     const client = new DynamoDBClient({region: "eu-west-2"})
     let getGameResponse = await client.send(new GetItemCommand({
-        TableName: GAME_TABLE,
+        TableName: "merge-chess-games",
         Key: marshall({"gameId": gameId})
     }))
 
     if (!getGameResponse.Item) {
         // See if that game has been queued, but not yet started
-        let getQueueResponse = await client.send(new GetItemCommand({
-            TableName: PUBLIC_QUEUE_TABLE,
+        let getPublicQueueResponse = await client.send(new GetItemCommand({
+            TableName: "merge-chess-public-queue",
             Key: marshall({"gameId": gameId})
         }))
-        if (getQueueResponse.Item) {
-            return {
-                statusCode: 200,
-                responseBody: {gameId: unmarshall(getQueueResponse.Item).gameId}
+        let getPrivateQueueResponse = await client.send(new GetItemCommand({
+            TableName: "merge-chess-private-queue",
+            Key: marshall({"gameId": gameId})
+        }))
+
+        if (!getPublicQueueResponse.Item && !getPrivateQueueResponse.Item ) {
+            return { // TODO - Figure out how to handle 400 responses in the AWS integration
+                statusCode: 400,
+                responseBody: {msg: "GameID not found"}
             }
         }
 
+        let game = getPublicQueueResponse.Item ? unmarshall(getPublicQueueResponse.Item) : unmarshall(getPrivateQueueResponse.Item)
         return { // TODO - Figure out how to handle 400 responses in the AWS integration
-            statusCode: 400,
-            responseBody: {msg: "GameID not found"}
+            statusCode: 200,
+            responseBody: {gameId: game.gameId}
         }
     }
     let game = unmarshall(getGameResponse.Item)

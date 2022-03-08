@@ -27,43 +27,37 @@ class App extends React.Component {
         this.validMovesHelper = new ValidMovesHelper(this.state)
     }
 
-    joinPublicGame = (colour) => {
-        fetch(`http://localhost:3001/api/v1/game/join-public`, {
+    makApiCall = (endpoint, body) => {
+        console.log(`Requesting ${endpoint} with:`, body)
+        fetch(`http://localhost:3001/api/v1/${endpoint}`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({playerColour: colour, playerId: this.state.playerId})
+            body: JSON.stringify(body)
         })
             .then(result => result.json())
-            .then(result => this.updateState(result))
+            .then(result => {
+                console.log(`Response from ${endpoint}:`, result)
+                this.updateState(result)
+            })
+    }
+
+    joinPublicGame = (colour) => {
+        this.makApiCall('game/join-public', {playerColour: colour, playerId: this.state.playerId})
     }
 
     createPrivateGame = (colour) => {
-        fetch(`http://localhost:3001/api/v1/game/create-private`, {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({opponentColour: colour, playerId: this.state.playerId})
-        })
-            .then(result => result.json())
-            .then(result => this.updateState(result))
+        this.makApiCall('game/create-private', {playerColour: colour, playerId: this.state.playerId})
     }
 
     joinPrivateGame = (colour, gameId) => {
-        fetch(`http://localhost:3001/api/v1/game/join-private`, {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({opponentColour: colour, gameId: gameId, playerId: this.state.playerId})
-        })
-            .then(result => result.json())
-            .then(result => this.updateState(result))
+        this.makApiCall('game/join-private', {playerColour: colour, gameId: gameId, playerId: this.state.playerId})
+    }
+
+    postMove = (requestBody) => {
+        this.makApiCall(`game/${this.state.gameId}/move`, requestBody)
     }
 
     getGameState = () => {
@@ -72,19 +66,8 @@ class App extends React.Component {
             .then(result => this.updateState(result)) // TODO - Fix rubber banding caused by old state from backend being applied
     }
 
-    postMove = (requestBody) => {
-        fetch(`http://localhost:3001/api/v1/game/${this.state.gameId}/move`, {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        })
-    }
 
     componentDidMount = () => {
-
         // Poll the backend for current game state
         this.statePollProcess = setInterval(() => {
             if (this.state.gameId !== null) {

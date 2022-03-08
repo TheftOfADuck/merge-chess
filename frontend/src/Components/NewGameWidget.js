@@ -12,7 +12,6 @@ class NewGameWidget extends React.Component {
         let privateGame = [...event.target].filter(x => x.name === "privateGame")[0].checked
 
         if (privateGame) {
-            console.log("Created private game")
             this.props.createPrivateGame(colourChoice)
         } else {
             this.props.joinPublicGame(colourChoice)
@@ -21,6 +20,9 @@ class NewGameWidget extends React.Component {
 
     joinPrivateGame = (event) => {
         event.preventDefault()
+        let colourChoice = [...event.target].filter(x => x.name === "colour").filter(x => x.checked)[0].value
+        let gameId = [...event.target].filter(x => x.id === "gameId")[0].value
+        this.props.joinPrivateGame(colourChoice, gameId)
     }
 
     render() {
@@ -52,7 +54,7 @@ class NewGameWidget extends React.Component {
                                     <input type="radio" value="either" name="colour" defaultChecked/>Either<br/>
                                     <input type="radio" value="white" name="colour"/>White<br/>
                                     <input type="radio" value="black" name="colour"/>Black<br/>
-                                    <label htmlFor="gameId">Game ID: </label><input id="gameId"/>
+                                    <label htmlFor="gameId">Game ID: </label><input id="gameId"/><br/>
                                     <input type="submit" value="Join"/>
                                 </form>
                             </fieldset>
