@@ -1,5 +1,11 @@
 import {queueNewGame} from "../shared/gameHelper.js";
 
+export async function lambdaHandler(event) {
+    return {
+        statusCode: 200,
+        body: JSON.stringify({message: 'postStartPrivateGame', input: event}),
+    };
+}
 
 export async function postStartPrivateGame(playerId, playerColour) {
     let allowWhiteOpponents = playerColour === "either" || playerColour === "black"

@@ -1,7 +1,7 @@
 import {DeleteItemCommand, DynamoDBClient, PutItemCommand} from "@aws-sdk/client-dynamodb";
 import randomWords from "random-words";
 import {marshall} from "@aws-sdk/util-dynamodb";
-import {ValidMovesHelper} from "shared/src/validMovesHelper.js";
+import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper.js";
 
 
 export async function queueNewGame(playerId, allowWhiteOpponents, allowBlackOpponents, isPrivate) {

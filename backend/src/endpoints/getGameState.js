@@ -1,6 +1,13 @@
 import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
 
+export async function lambdaHandler(event) {
+    return {
+        statusCode: 200,
+        body: JSON.stringify({message: 'getGameState', input: event}),
+    };
+}
+
 export async function getGameState(gameId, playerId) {
     const client = new DynamoDBClient({region: "eu-west-2"})
     let getGameResponse = await client.send(new GetItemCommand({

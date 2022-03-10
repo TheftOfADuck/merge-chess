@@ -2,8 +2,14 @@ import {DynamoDBClient, ScanCommand} from "@aws-sdk/client-dynamodb";
 import {unmarshall} from "@aws-sdk/util-dynamodb";
 import {queueNewGame, startQueuedGame} from "../shared/gameHelper.js";
 
+export async function lambdaHandler(event) {
+    return {
+        statusCode: 200,
+        body: JSON.stringify({message: 'postStartPublicGame', input: event}),
+    };
+}
 
-export async function postJoinPublicGame(playerId, playerColour) {
+export async function postStartPublicGame(playerId, playerColour) {
     let allowWhiteOpponents = playerColour === "either" || playerColour === "black"
     let allowBlackOpponents = playerColour === "either" || playerColour === "white"
     const client = new DynamoDBClient({region: "eu-west-2"})
