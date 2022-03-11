@@ -1,5 +1,5 @@
 const {queueNewGame} = require("../gameQueuer.js")
-const {corsHeaders} = require("/shared/src/constants.js")
+const {corsHeaders} = require("shared/src/constants.js")
 
 async function lambdaHandler(event) {
     let requestBody = JSON.parse(event.body)

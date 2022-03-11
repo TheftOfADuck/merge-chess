@@ -9,7 +9,7 @@
     "shared": "file:../shared"
   },
   "scripts": {
-    "start": "docker run -d -p 8000:8000 --name dynamodb amazon/dynamodb-local && serverless offline --stage=dev",
+    "start": "serverless offline --stage=development",
     "deploy": "serverless deploy",
     "destroy": "serverless remove"
   }
