@@ -1,70 +1,36 @@
-# Getting Started with Create React App
+# Build Environment
+To build this application, you must have the following tools globally installed:
+- node >= 16.14.0
+- npm >= 8.3.1
+- serverless >= 3.7.3. [npm link](https://www.npmjs.com/package/serverless)
+- serverless-domain-manager >= 6.0.2. [npm link](https://www.npmjs.com/package/serverless-domain-manager)
+- serverless-offline >= 8.5.0. [npm link](https://www.npmjs.com/package/serverless-offline)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Project Structure
+This repository is a monorepo of three components:
+- backend - APIs used to store game data and communicate between players
+- frontend - HTML and JS seen by the user
+- shared - Shared code used by both backend and frontend. This is not deployed alone, but is packaged into each frontend/backend deployment with the package.json deploy script.
 
-## Available Scripts
+Each component has its own package.json, installs its dependencies separately, and deploys separately.
 
-In the project directory, you can run:
+## Backend
+The backend is a collection of AWS lambda functions, co-ordinated by an API gateway instance. The serverless framework is used to run locally and deploy to AWS.
+The primary purpose of the backend is to allow front-end clients to communicate with each other, and store state of the game
 
-### `npm start`
+## Frontend
+The frontend is a single page React application, deployed to an S3 bucket configured for static website hosting.
+The front-end JS will periodically poll the backend, asking for the current state of the game.
+When a user queues a game, or makes a move in the game, the frontend will post that event to the backend.
+The opponent's client will then pick up that change due to the periodic polling behaviour.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Deployment Prerequisites
+Deploying the application has some manual pre-requisites, that only need to be done once per project.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Domains and Certificates
+A domain must be purchased through AWS registrar, and a hosted zone created. An SSL certificate must also be purchased for that domain.
+To set up a custom domain for the front-end, follow [this guide](https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html).
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## S3 bucket
+An S3 bucket configured for static website hosting must be created, and the frontend package.json scripts updated to use that.
+Follow [this guide](https://andela.com/insights/how-to-deploy-your-react-app-to-aws-s3/).
