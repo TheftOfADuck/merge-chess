@@ -1,6 +1,7 @@
 import {startQueuedGame} from "../shared/gameHelper.js";
 import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
+import {corsHeaders} from "../shared/constants.js";
 
 export async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId
@@ -8,6 +9,7 @@ export async function lambdaHandler(event) {
     let response = await postJoinPrivateGame(requestBody.playerId, requestBody.playerColour, gameId)
     return {
         statusCode: response.statusCode,
+        headers: corsHeaders,
         body: JSON.stringify(response.responseBody),
     };
 }

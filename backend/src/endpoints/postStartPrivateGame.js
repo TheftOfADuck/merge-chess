@@ -1,10 +1,12 @@
 import {queueNewGame} from "../shared/gameHelper.js";
+import {corsHeaders} from "../shared/constants.js";
 
 export async function lambdaHandler(event) {
     let requestBody = JSON.parse(event.body)
     let response = await postStartPrivateGame(requestBody.playerId, requestBody.playerColour)
     return {
         statusCode: response.statusCode,
+        headers: corsHeaders,
         body: JSON.stringify(response.responseBody),
     };
 }

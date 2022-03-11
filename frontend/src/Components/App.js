@@ -61,7 +61,7 @@ class App extends React.Component {
     }
 
     getGameState = () => {
-        fetch(`http://localhost:3001/api/v1/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
+        fetch(`https://merge-chess-api.theftofaduck.com/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
             .then(result => result.json())
             .then(result => this.updateState(result)) // TODO - Fix rubber banding caused by old state from backend being applied
     }

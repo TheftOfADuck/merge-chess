@@ -1,6 +1,7 @@
 import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper.js";
 import {DynamoDBClient, GetItemCommand, PutItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
+import {corsHeaders} from "../shared/constants.js";
 
 export async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId
@@ -17,6 +18,7 @@ export async function lambdaHandler(event) {
 
     return {
         statusCode: response.statusCode,
+        headers: corsHeaders,
         body: JSON.stringify(response.responseBody),
     };
 }

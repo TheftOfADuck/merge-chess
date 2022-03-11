@@ -23,6 +23,7 @@ provider:
             - dynamodb:Scan
             - dynamodb:GetItem
             - dynamodb:PutItem
+            - dynamodb:DeleteItem
           Resource: "*" # TODO - Limit this to only the merge-chess tables
 
 
@@ -37,6 +38,7 @@ functions:
       - http: # TODO - What's the difference between http and httpApi event types?
           path: game/start-public
           method: post
+          cors: true
 
   postStartPrivateGame:
     handler: src/endpoints/postStartPrivateGame.lambdaHandler
@@ -44,6 +46,7 @@ functions:
       - http: # TODO - What's the difference between http and httpApi event types?
           path: game/start-private
           method: post
+          cors: true
 
   postJoinPrivateGame:
     handler: src/endpoints/postJoinPrivateGame.lambdaHandler
@@ -51,6 +54,7 @@ functions:
       - http: # TODO - What's the difference between http and httpApi event types?
           path: game/{gameId}/join
           method: post
+          cors: true
           request:
             parameters:
               paths:
@@ -62,6 +66,7 @@ functions:
       - http: # TODO - What's the difference between http and httpApi event types?
           path: game/{gameId}/state
           method: get
+          cors: true
           request:
             parameters:
               paths:
@@ -73,6 +78,7 @@ functions:
       - http: # TODO - What's the difference between http and httpApi event types?
           path: game/{gameId}/move
           method: post
+          cors: true
           request:
             parameters:
               paths:

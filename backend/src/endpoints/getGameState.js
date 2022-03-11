@@ -1,5 +1,6 @@
 import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
+import {corsHeaders} from "../shared/constants.js";
 
 export async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId
@@ -7,6 +8,7 @@ export async function lambdaHandler(event) {
     let gameState = await getGameState(gameId, playerId)
     return {
         statusCode: gameState.statusCode,
+        headers: corsHeaders,
         body: JSON.stringify(gameState.responseBody),
     };
 }
