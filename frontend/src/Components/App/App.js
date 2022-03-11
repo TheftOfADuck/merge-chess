@@ -217,7 +217,7 @@ class App extends React.Component {
     render() {
         return (
             <>
-                <h1>base-chess</h1>
+                <h1>Merge Chess</h1>
                 <NewGameWidget
                     joinPublicGame={this.joinPublicGame}
                     joinPrivateGame={this.joinPrivateGame}

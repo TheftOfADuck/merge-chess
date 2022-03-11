@@ -1,9 +1,9 @@
 # For full config options, check the docs:
 #    docs.serverless.com
 
-service: base-chess
+service: merge-chess
 # app and org for use with dashboard.serverless.com
-#app: base-chess
+#app: merge-chess
 #org: theftofaduck
 
 frameworkVersion: '3'
@@ -94,7 +94,7 @@ resources:
     games:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: base-chess-games
+        TableName: merge-chess-games
         AttributeDefinitions:
           - AttributeName: gameId
             AttributeType: S
@@ -106,7 +106,7 @@ resources:
     publicQueue:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: base-chess-public-queue
+        TableName: merge-chess-public-queue
         AttributeDefinitions:
           - AttributeName: gameId
             AttributeType: S
@@ -118,7 +118,7 @@ resources:
     privateQueue:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: base-chess-private-queue
+        TableName: merge-chess-private-queue
         AttributeDefinitions:
           - AttributeName: gameId
             AttributeType: S
@@ -134,7 +134,7 @@ plugins:
 
 custom:
   customDomain:
-    domainName: 'base-chess-api.theftofaduck.com'
+    domainName: 'merge-chess-api.theftofaduck.com'
     certificateName : '*.theftofaduck.com'
     createRoute53Record: true
     endpointType: 'regional'

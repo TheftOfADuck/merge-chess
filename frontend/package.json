@@ -12,8 +12,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "deploy": "react-scripts build && aws s3 sync build/ s3://base-chess.theftofaduck.com",
-    "destroy": "aws s3 rm s3://base-chess.theftofaduck.com --recursive"
+    "deploy": "react-scripts build && aws s3 sync build/ s3://merge-chess.theftofaduck.com",
+    "destroy": "aws s3 rm s3://merge-chess.theftofaduck.com --recursive"
   },
   "eslintConfig": {
     "extends": [
