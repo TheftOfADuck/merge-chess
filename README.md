@@ -5,6 +5,7 @@ To build this application, you must have the following tools globally installed:
 - serverless >= 3.7.3. [npm link](https://www.npmjs.com/package/serverless)
 - serverless-domain-manager >= 6.0.2. [npm link](https://www.npmjs.com/package/serverless-domain-manager)
 - serverless-offline >= 8.5.0. [npm link](https://www.npmjs.com/package/serverless-offline)
+- serverless-dotenv-plugin >= 3.12.2. [npm link](https://www.npmjs.com/package/serverless-dotenv-plugin)
 
 # Project Structure
 This repository is a monorepo of three components:

@@ -1,11 +1,11 @@
-import {DynamoDBClient, GetItemCommand, PutItemCommand} from "@aws-sdk/client-dynamodb"
-import {marshall, unmarshall} from "@aws-sdk/util-dynamodb"
+const {GetItemCommand, PutItemCommand} = require("@aws-sdk/client-dynamodb")
+const {marshall, unmarshall} = require("@aws-sdk/util-dynamodb")
 
-import {ValidMovesHelper} from "shared/src/validMovesHelper.js"
-import {corsHeaders} from "../shared/constants.js"
-import {gamesTableName} from "shared/src/constants.js";
+const {ValidMovesHelper} = require("shared/src/validMovesHelper.js")
+const {corsHeaders, gamesTableName} = require("shared/src/constants.js")
+const {dynamodbClient} = require("../aws_clients");
 
-export async function lambdaHandler(event) {
+async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId
     let requestBody = JSON.parse(event.body)
     let response = await postMove(
@@ -25,9 +25,8 @@ export async function lambdaHandler(event) {
     };
 }
 
-export async function postMove(gameId, playerId, nextTurnColour, nextTurnNumber, oldSquareId, newSquareId, promotionPiece) {
-    const client = new DynamoDBClient({region: "eu-west-2"})
-    let getGameResponse = await client.send(new GetItemCommand({
+async function postMove(gameId, playerId, nextTurnColour, nextTurnNumber, oldSquareId, newSquareId, promotionPiece) {
+    let getGameResponse = await dynamodbClient.send(new GetItemCommand({
         TableName: gamesTableName,
         Key: marshall({"gameId": gameId})
     }))
@@ -102,7 +101,7 @@ export async function postMove(gameId, playerId, nextTurnColour, nextTurnNumber,
         game.checkmate = true
     }
 
-    await client.send(new PutItemCommand({
+    await dynamodbClient.send(new PutItemCommand({
         TableName: gamesTableName,
         Item: marshall(game)
     }))
@@ -111,4 +110,8 @@ export async function postMove(gameId, playerId, nextTurnColour, nextTurnNumber,
         statusCode: 201,
         responseBody: {msg: "move accepted"}
     }
+}
+
+module.exports = {
+    lambdaHandler: lambdaHandler
 }

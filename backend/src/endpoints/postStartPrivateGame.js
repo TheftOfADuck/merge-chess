@@ -1,7 +1,7 @@
-import {queueNewGame} from "../shared/gameHelper.js"
-import {corsHeaders} from "../shared/constants.js"
+const {queueNewGame} = require("../gameQueuer.js")
+const {corsHeaders} = require("/shared/src/constants.js")
 
-export async function lambdaHandler(event) {
+async function lambdaHandler(event) {
     let requestBody = JSON.parse(event.body)
     let response = await postStartPrivateGame(requestBody.playerId, requestBody.playerColour)
     return {
@@ -11,7 +11,7 @@ export async function lambdaHandler(event) {
     };
 }
 
-export async function postStartPrivateGame(playerId, playerColour) {
+async function postStartPrivateGame(playerId, playerColour) {
     let allowWhiteOpponents = playerColour === "either" || playerColour === "black"
     let allowBlackOpponents = playerColour === "either" || playerColour === "white"
     let newGameId = await queueNewGame(playerId, allowWhiteOpponents, allowBlackOpponents, true)
@@ -20,4 +20,8 @@ export async function postStartPrivateGame(playerId, playerColour) {
         statusCode: 200,
         responseBody: {gameId: newGameId}
     }
+}
+
+module.exports = {
+    lambdaHandler: lambdaHandler
 }

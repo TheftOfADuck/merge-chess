@@ -2,7 +2,6 @@
   "name": "backend",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.53.0",
     "@aws-sdk/util-dynamodb": "^3.53.0",
@@ -10,7 +9,7 @@
     "shared": "file:../shared"
   },
   "scripts": {
-    "start": "serverless offline",
+    "start": "docker run -d -p 8000:8000 --name dynamodb amazon/dynamodb-local && serverless offline --stage=dev",
     "deploy": "serverless deploy",
     "destroy": "serverless remove"
   }

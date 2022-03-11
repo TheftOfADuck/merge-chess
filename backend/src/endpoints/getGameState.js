@@ -1,10 +1,10 @@
-import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb"
-import {marshall, unmarshall} from "@aws-sdk/util-dynamodb"
+const {GetItemCommand} = require("@aws-sdk/client-dynamodb")
+const {marshall, unmarshall} = require("@aws-sdk/util-dynamodb")
 
-import {corsHeaders} from "../shared/constants.js"
-import {gamesTableName, privateQueueTableName, publicQueueTableName} from "shared/src/constants.js";
+const {corsHeaders, gamesTableName, privateQueueTableName, publicQueueTableName} = require("shared/src/constants.js")
+const {dynamodbClient} = require("../aws_clients");
 
-export async function lambdaHandler(event) {
+async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId
     let playerId = event.queryStringParameters ? event.queryStringParameters.playerId : null
     let gameState = await getGameState(gameId, playerId)
@@ -15,20 +15,20 @@ export async function lambdaHandler(event) {
     };
 }
 
-export async function getGameState(gameId, playerId) {
-    const client = new DynamoDBClient({region: "eu-west-2"})
-    let getGameResponse = await client.send(new GetItemCommand({
+async function getGameState(gameId, playerId) {
+
+    let getGameResponse = await dynamodbClient.send(new GetItemCommand({
         TableName: gamesTableName,
         Key: marshall({"gameId": gameId})
     }))
 
     if (!getGameResponse.Item) {
         // See if that game has been queued, but not yet started
-        let getPublicQueueResponse = await client.send(new GetItemCommand({
+        let getPublicQueueResponse = await dynamodbClient.send(new GetItemCommand({
             TableName: publicQueueTableName,
             Key: marshall({"gameId": gameId})
         }))
-        let getPrivateQueueResponse = await client.send(new GetItemCommand({
+        let getPrivateQueueResponse = await dynamodbClient.send(new GetItemCommand({
             TableName: privateQueueTableName,
             Key: marshall({"gameId": gameId})
         }))
@@ -63,4 +63,8 @@ export async function getGameState(gameId, playerId) {
             attackedKing: game.attackedKing
         }
     }
+}
+
+module.exports = {
+    lambdaHandler: lambdaHandler
 }
