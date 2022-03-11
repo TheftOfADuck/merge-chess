@@ -66,7 +66,7 @@ class App extends React.Component {
 
     getGameState = () => {
         let hostName = process.env.REACT_APP_API_HOSTNAME || `https://${appName}-api.theftofaduck.com`
-        fetch(`${hostName}/${this.state.gameId}/state?playerId=${this.state.playerId}`)
+        fetch(`${hostName}/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
             .then(result => result.json())
             .then(result => this.updateState(result)) // TODO - Fix rubber banding caused by old state from backend being applied
     }
