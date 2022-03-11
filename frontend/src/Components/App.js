@@ -1,9 +1,10 @@
-import React from "react";
+import React from "react"
+import {v4 as uuidv4} from 'uuid'
+
 import Board from './Board'
 import CaptureRow from './CaptureRow'
-import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper";
-import {v4 as uuidv4} from 'uuid';
-import NewGameWidget from "./NewGameWidget";
+import NewGameWidget from "./NewGameWidget"
+import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper"
 
 class App extends React.Component {
 
@@ -53,7 +54,8 @@ class App extends React.Component {
     }
 
     joinPrivateGame = (colour, gameId) => {
-        this.makApiCall('game/join-private', {playerColour: colour, gameId: gameId, playerId: this.state.playerId})
+        this.makApiCall(`game/${gameId}/join`, {playerColour: colour, gameId: gameId, playerId: this.state.playerId})
+        // TODO - Feedback to UI if gameId is invalid. This will be for typos, or the game is in play and you're not a participant
     }
 
     postMove = (requestBody) => {

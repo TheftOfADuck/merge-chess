@@ -1,7 +1,8 @@
-import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper.js";
-import {DynamoDBClient, GetItemCommand, PutItemCommand} from "@aws-sdk/client-dynamodb";
-import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
-import {corsHeaders} from "../shared/constants.js";
+import {DynamoDBClient, GetItemCommand, PutItemCommand} from "@aws-sdk/client-dynamodb"
+import {marshall, unmarshall} from "@aws-sdk/util-dynamodb"
+
+import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper.js"
+import {corsHeaders} from "../shared/constants.js"
 
 export async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId

@@ -1,5 +1,5 @@
-import {queueNewGame} from "../shared/gameHelper.js";
-import {corsHeaders} from "../shared/constants.js";
+import {queueNewGame} from "../shared/gameHelper.js"
+import {corsHeaders} from "../shared/constants.js"
 
 export async function lambdaHandler(event) {
     let requestBody = JSON.parse(event.body)

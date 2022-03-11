@@ -1,7 +1,8 @@
-import {DynamoDBClient, ScanCommand} from "@aws-sdk/client-dynamodb";
-import {unmarshall} from "@aws-sdk/util-dynamodb";
-import {queueNewGame, startQueuedGame} from "../shared/gameHelper.js";
-import {corsHeaders} from "../shared/constants.js";
+import {DynamoDBClient, ScanCommand} from "@aws-sdk/client-dynamodb"
+import {unmarshall} from "@aws-sdk/util-dynamodb"
+
+import {queueNewGame, startQueuedGame} from "../shared/gameHelper.js"
+import {corsHeaders} from "../shared/constants.js"
 
 export async function lambdaHandler(event) {
     let requestBody = JSON.parse(event.body)

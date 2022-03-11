@@ -1,5 +1,6 @@
-import React from "react";
-import Square from "./Square";
+import React from "react"
+
+import Square from "./Square"
 
 
 class CaptureRow extends React.Component {
