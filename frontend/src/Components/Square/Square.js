@@ -1,7 +1,7 @@
 import React from "react"
 
 import './Square.css'
-import PawnPromotionRank from "./PawnPromotionRank"
+import PawnPromotionRank from "../PawnPromotionRank/PawnPromotionRank.js"
 
 
 class Square extends React.Component {

@@ -1,9 +1,9 @@
 import React from "react"
 import {v4 as uuidv4} from 'uuid'
 
-import Board from './Board'
-import CaptureRow from './CaptureRow'
-import NewGameWidget from "./NewGameWidget"
+import Board from '../Board/Board.js'
+import CaptureRow from '../CaptureRow/CaptureRow.js'
+import NewGameWidget from "../NewGameWidget/NewGameWidget.js"
 import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper"
 
 class App extends React.Component {
