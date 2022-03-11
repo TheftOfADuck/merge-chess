@@ -1,5 +1,5 @@
 {
-  "name": "merge-chess-frontend",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,12 +8,12 @@
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.4",
     "uuid": "^8.3.2",
-    "merge-chess-shared": "file:../shared"
+    "shared": "file:../shared"
   },
   "scripts": {
-    "init": "npm install",
     "start": "react-scripts start",
-    "deploy": "react-scripts build && aws s3 sync build/ s3://merge-chess.theftofaduck.com"
+    "deploy": "react-scripts build && aws s3 sync build/ s3://base-chess.theftofaduck.com",
+    "destroy": "aws s3 rm s3://base-chess.theftofaduck.com --recursive"
   },
   "eslintConfig": {
     "extends": [

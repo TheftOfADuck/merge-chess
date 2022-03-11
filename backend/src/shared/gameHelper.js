@@ -2,12 +2,13 @@ import {DeleteItemCommand, DynamoDBClient, PutItemCommand} from "@aws-sdk/client
 import {marshall} from "@aws-sdk/util-dynamodb"
 import randomWords from "random-words"
 
-import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper.js"
+import {ValidMovesHelper} from "shared/src/validMovesHelper.js"
+import {gamesTableName, privateQueueTableName, publicQueueTableName} from "shared/src/constants.js";
 
 
 export async function queueNewGame(playerId, allowWhiteOpponents, allowBlackOpponents, isPrivate) {
     const client = new DynamoDBClient({region: "eu-west-2"})
-    const queueTable = isPrivate ? "merge-chess-private-queue" : "merge-chess-public-queue"
+    const queueTable = isPrivate ? privateQueueTableName : publicQueueTableName
 
     let newGameId = randomWords({exactly: 5, join: "-"})
 
@@ -29,7 +30,7 @@ export async function queueNewGame(playerId, allowWhiteOpponents, allowBlackOppo
 
 export async function startQueuedGame(secondPlayerId, playerColour, queuedItem, isPrivate) {
     const client = new DynamoDBClient({region: "eu-west-2"})
-    const queueTable = isPrivate ? "merge-chess-private-queue" : "merge-chess-public-queue"
+    const queueTable = isPrivate ? privateQueueTableName : publicQueueTableName
 
     // Decide how to assign the white and black colours
     let playerConfig = {white: null, black: null}
@@ -51,7 +52,7 @@ export async function startQueuedGame(secondPlayerId, playerColour, queuedItem, 
     newGame.gameId = queuedItem.gameId
     newGame.gameStatus = "started"
     await client.send(new PutItemCommand({
-        TableName: "merge-chess-games",
+        TableName: gamesTableName,
         Item: marshall(newGame)
     }))
 

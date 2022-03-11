@@ -2,6 +2,7 @@ import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb"
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb"
 
 import {corsHeaders} from "../shared/constants.js"
+import {gamesTableName, privateQueueTableName, publicQueueTableName} from "shared/src/constants.js";
 
 export async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId
@@ -17,18 +18,18 @@ export async function lambdaHandler(event) {
 export async function getGameState(gameId, playerId) {
     const client = new DynamoDBClient({region: "eu-west-2"})
     let getGameResponse = await client.send(new GetItemCommand({
-        TableName: "merge-chess-games",
+        TableName: gamesTableName,
         Key: marshall({"gameId": gameId})
     }))
 
     if (!getGameResponse.Item) {
         // See if that game has been queued, but not yet started
         let getPublicQueueResponse = await client.send(new GetItemCommand({
-            TableName: "merge-chess-public-queue",
+            TableName: publicQueueTableName,
             Key: marshall({"gameId": gameId})
         }))
         let getPrivateQueueResponse = await client.send(new GetItemCommand({
-            TableName: "merge-chess-private-queue",
+            TableName: privateQueueTableName,
             Key: marshall({"gameId": gameId})
         }))
 

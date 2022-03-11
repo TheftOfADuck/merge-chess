@@ -3,6 +3,7 @@ import {unmarshall} from "@aws-sdk/util-dynamodb"
 
 import {queueNewGame, startQueuedGame} from "../shared/gameHelper.js"
 import {corsHeaders} from "../shared/constants.js"
+import {publicQueueTableName} from "shared/src/constants.js";
 
 export async function lambdaHandler(event) {
     let requestBody = JSON.parse(event.body)
@@ -18,10 +19,9 @@ export async function postStartPublicGame(playerId, playerColour) {
     let allowWhiteOpponents = playerColour === "either" || playerColour === "black"
     let allowBlackOpponents = playerColour === "either" || playerColour === "white"
     const client = new DynamoDBClient({region: "eu-west-2"})
-    const queueTable = "merge-chess-public-queue"
 
     // TODO - Make this a query rather than scan
-    let scanResults = await client.send(new ScanCommand({TableName: queueTable}))
+    let scanResults = await client.send(new ScanCommand({TableName: publicQueueTableName}))
     if (scanResults.Count === 0) { // Nothing in the queue matching player requirements. Queue a new game
         let newGameId = await queueNewGame(playerId, allowWhiteOpponents, allowBlackOpponents, false)
         return {

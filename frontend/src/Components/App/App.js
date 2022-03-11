@@ -4,7 +4,8 @@ import {v4 as uuidv4} from 'uuid'
 import Board from '../Board/Board.js'
 import CaptureRow from '../CaptureRow/CaptureRow.js'
 import NewGameWidget from "../NewGameWidget/NewGameWidget.js"
-import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper"
+import {ValidMovesHelper} from "shared/src/validMovesHelper.js"
+import {appName} from "shared/src/constants.js";
 
 class App extends React.Component {
 
@@ -30,7 +31,7 @@ class App extends React.Component {
 
     makApiCall = (endpoint, body) => {
         console.log(`Requesting ${endpoint} with:`, body)
-        fetch(`https://merge-chess-api.theftofaduck.com/${endpoint}`, {
+        fetch(`https://${appName}-api.theftofaduck.com/${endpoint}`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -63,7 +64,7 @@ class App extends React.Component {
     }
 
     getGameState = () => {
-        fetch(`https://merge-chess-api.theftofaduck.com/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
+        fetch(`https://${appName}-api.theftofaduck.com/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
             .then(result => result.json())
             .then(result => this.updateState(result)) // TODO - Fix rubber banding caused by old state from backend being applied
     }
@@ -216,12 +217,13 @@ class App extends React.Component {
     render() {
         return (
             <>
-                <h1>Merge Chess</h1>
+                <h1>base-chess</h1>
                 <NewGameWidget
                     joinPublicGame={this.joinPublicGame}
                     joinPrivateGame={this.joinPrivateGame}
                     createPrivateGame={this.createPrivateGame}
                     gameId={this.state.gameId}
+                    checkmate={this.state.checkmate}
                     />
                 {this.state.gameId !== null && this.state.gameStatus !== "started" ? <p>Waiting for second player</p> : null}
                 <CaptureRow capturedPieces={this.state.playerColour === "white" ? this.state.blackCaptures : this.state.whiteCaptures}/>

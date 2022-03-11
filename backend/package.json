@@ -1,17 +1,17 @@
 {
-  "name": "merge-chess-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "main": "local_app.js",
+  "private": true,
   "type": "module",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.53.0",
     "@aws-sdk/util-dynamodb": "^3.53.0",
-    "merge-chess-shared": "file:../shared",
-    "random-words": "^1.1.2"
+    "random-words": "^1.1.2",
+    "shared": "file:../shared"
   },
   "scripts": {
-    "init": "npm install",
     "start": "serverless offline",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy",
+    "destroy": "serverless remove"
   }
 }

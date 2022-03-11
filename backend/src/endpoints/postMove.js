@@ -1,8 +1,9 @@
 import {DynamoDBClient, GetItemCommand, PutItemCommand} from "@aws-sdk/client-dynamodb"
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb"
 
-import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper.js"
+import {ValidMovesHelper} from "shared/src/validMovesHelper.js"
 import {corsHeaders} from "../shared/constants.js"
+import {gamesTableName} from "shared/src/constants.js";
 
 export async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId
@@ -27,7 +28,7 @@ export async function lambdaHandler(event) {
 export async function postMove(gameId, playerId, nextTurnColour, nextTurnNumber, oldSquareId, newSquareId, promotionPiece) {
     const client = new DynamoDBClient({region: "eu-west-2"})
     let getGameResponse = await client.send(new GetItemCommand({
-        TableName: "merge-chess-games",
+        TableName: gamesTableName,
         Key: marshall({"gameId": gameId})
     }))
 
@@ -102,7 +103,7 @@ export async function postMove(gameId, playerId, nextTurnColour, nextTurnNumber,
     }
 
     await client.send(new PutItemCommand({
-        TableName: "merge-chess-games",
+        TableName: gamesTableName,
         Item: marshall(game)
     }))
 

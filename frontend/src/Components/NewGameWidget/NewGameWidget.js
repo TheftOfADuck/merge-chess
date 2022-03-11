@@ -28,7 +28,7 @@ class NewGameWidget extends React.Component {
     render() {
         return (
             <>
-                {this.props.gameId ?
+                {this.props.gameId && !this.props.checkmate ?
                     <>
                         <p><strong>Game ID:</strong> {this.props.gameId}</p>
                     </> :
