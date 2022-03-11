@@ -6,12 +6,11 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.53.0",
     "@aws-sdk/util-dynamodb": "^3.53.0",
-    "random-words": "^1.1.2",
-    "cors": "^2.8.5",
-    "express": "^4.17.3",
-    "merge-chess-shared": "file:../shared"
+    "merge-chess-shared": "file:../shared",
+    "random-words": "^1.1.2"
   },
   "scripts": {
-    "start": "node local_app.js"
+    "start": "serverless offline --httpPort 3001",
+    "deploy": "serverless deploy"
   }
 }

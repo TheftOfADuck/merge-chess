@@ -1,7 +1,7 @@
 import React from "react";
 import Board from './Board'
 import CaptureRow from './CaptureRow'
-import {ValidMovesHelper} from "shared/src/validMovesHelper";
+import {ValidMovesHelper} from "merge-chess-shared/src/validMovesHelper";
 import {v4 as uuidv4} from 'uuid';
 import NewGameWidget from "./NewGameWidget";
 
@@ -29,7 +29,7 @@ class App extends React.Component {
 
     makApiCall = (endpoint, body) => {
         console.log(`Requesting ${endpoint} with:`, body)
-        fetch(`http://localhost:3001/api/v1/${endpoint}`, {
+        fetch(`https://merge-chess-api.theftofaduck.com/${endpoint}`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -45,11 +45,11 @@ class App extends React.Component {
     }
 
     joinPublicGame = (colour) => {
-        this.makApiCall('game/join-public', {playerColour: colour, playerId: this.state.playerId})
+        this.makApiCall('game/start-public', {playerColour: colour, playerId: this.state.playerId})
     }
 
     createPrivateGame = (colour) => {
-        this.makApiCall('game/create-private', {playerColour: colour, playerId: this.state.playerId})
+        this.makApiCall('game/start-private', {playerColour: colour, playerId: this.state.playerId})
     }
 
     joinPrivateGame = (colour, gameId) => {
@@ -65,7 +65,6 @@ class App extends React.Component {
             .then(result => result.json())
             .then(result => this.updateState(result)) // TODO - Fix rubber banding caused by old state from backend being applied
     }
-
 
     componentDidMount = () => {
         // Poll the backend for current game state

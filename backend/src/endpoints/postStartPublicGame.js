@@ -3,9 +3,11 @@ import {unmarshall} from "@aws-sdk/util-dynamodb";
 import {queueNewGame, startQueuedGame} from "../shared/gameHelper.js";
 
 export async function lambdaHandler(event) {
+    let requestBody = JSON.parse(event.body)
+    let response = await postStartPublicGame(requestBody.playerId, requestBody.playerColour)
     return {
-        statusCode: 200,
-        body: JSON.stringify({message: 'postStartPublicGame', input: event}),
+        statusCode: response.statusCode,
+        body: JSON.stringify(response.responseBody),
     };
 }
 

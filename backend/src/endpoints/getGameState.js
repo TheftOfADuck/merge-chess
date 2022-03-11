@@ -2,9 +2,12 @@ import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
 
 export async function lambdaHandler(event) {
+    let gameId = event.pathParameters.gameId
+    let playerId = event.queryStringParameters ? event.queryStringParameters.playerId : null
+    let gameState = await getGameState(gameId, playerId)
     return {
-        statusCode: 200,
-        body: JSON.stringify({message: 'getGameState', input: event}),
+        statusCode: gameState.statusCode,
+        body: JSON.stringify(gameState.responseBody),
     };
 }
 
@@ -27,14 +30,14 @@ export async function getGameState(gameId, playerId) {
         }))
 
         if (!getPublicQueueResponse.Item && !getPrivateQueueResponse.Item ) {
-            return { // TODO - Figure out how to handle 400 responses in the AWS integration
+            return {
                 statusCode: 400,
-                responseBody: {msg: "GameID not found"}
+                responseBody: {msg: "Invalid GameId"}
             }
         }
 
         let game = getPublicQueueResponse.Item ? unmarshall(getPublicQueueResponse.Item) : unmarshall(getPrivateQueueResponse.Item)
-        return { // TODO - Figure out how to handle 400 responses in the AWS integration
+        return {
             statusCode: 200,
             responseBody: {gameId: game.gameId}
         }

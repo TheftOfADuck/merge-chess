@@ -1,9 +1,11 @@
 import {queueNewGame} from "../shared/gameHelper.js";
 
 export async function lambdaHandler(event) {
+    let requestBody = JSON.parse(event.body)
+    let response = await postStartPrivateGame(requestBody.playerId, requestBody.playerColour)
     return {
-        statusCode: 200,
-        body: JSON.stringify({message: 'postStartPrivateGame', input: event}),
+        statusCode: response.statusCode,
+        body: JSON.stringify(response.responseBody),
     };
 }
 

@@ -3,9 +3,12 @@ import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
 
 export async function lambdaHandler(event) {
+    let gameId = event.pathParameters.gameId
+    let requestBody = JSON.parse(event.body)
+    let response = await postJoinPrivateGame(requestBody.playerId, requestBody.playerColour, gameId)
     return {
-        statusCode: 200,
-        body: JSON.stringify({message: 'postJoinPrivateGame', input: event}),
+        statusCode: response.statusCode,
+        body: JSON.stringify(response.responseBody),
     };
 }
 

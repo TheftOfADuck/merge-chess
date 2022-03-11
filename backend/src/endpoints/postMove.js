@@ -3,9 +3,21 @@ import {DynamoDBClient, GetItemCommand, PutItemCommand} from "@aws-sdk/client-dy
 import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
 
 export async function lambdaHandler(event) {
+    let gameId = event.pathParameters.gameId
+    let requestBody = JSON.parse(event.body)
+    let response = await postMove(
+        gameId,
+        requestBody.playerId,
+        requestBody.nextTurnColour,
+        requestBody.nextTurnNumber,
+        requestBody.oldSquareId,
+        requestBody.newSquareId,
+        requestBody.promotionPiece,
+        )
+
     return {
-        statusCode: 200,
-        body: JSON.stringify({message: 'postMove', input: event}),
+        statusCode: response.statusCode,
+        body: JSON.stringify(response.responseBody),
     };
 }
 

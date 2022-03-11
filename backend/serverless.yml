@@ -30,34 +30,26 @@ provider:
 #  environment:
 #    variable1: value1
 
-# you can add packaging information here
-#package:
-#  patterns:
-#    - '!exclude-me.js'
-#    - '!exclude-me-dir/**'
-#    - include-me.js
-#    - include-me-dir/**
-
 functions:
   postStartPublicGame:
     handler: src/endpoints/postStartPublicGame.lambdaHandler
     events:
       - http: # TODO - What's the difference between http and httpApi event types?
-          path: api/v1/game/start-public
+          path: game/start-public
           method: post
 
   postStartPrivateGame:
     handler: src/endpoints/postStartPrivateGame.lambdaHandler
     events:
       - http: # TODO - What's the difference between http and httpApi event types?
-          path: api/v1/game/start-private
+          path: game/start-private
           method: post
 
   postJoinPrivateGame:
     handler: src/endpoints/postJoinPrivateGame.lambdaHandler
     events:
       - http: # TODO - What's the difference between http and httpApi event types?
-          path: api/v1/game/{gameId}/join
+          path: game/{gameId}/join
           method: post
           request:
             parameters:
@@ -68,7 +60,7 @@ functions:
     handler: src/endpoints/getGameState.lambdaHandler
     events:
       - http: # TODO - What's the difference between http and httpApi event types?
-          path: api/v1/game/{gameId}/state
+          path: game/{gameId}/state
           method: get
           request:
             parameters:
@@ -79,7 +71,7 @@ functions:
     handler: src/endpoints/postMove.lambdaHandler
     events:
       - http: # TODO - What's the difference between http and httpApi event types?
-          path: api/v1/game/{gameId}/move
+          path: game/{gameId}/move
           method: post
           request:
             parameters:
@@ -89,14 +81,57 @@ functions:
 #    Define function environment variables here
 #    environment:
 #      variable2: value2
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+
+resources:
+  Resources:
+
+    games:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: merge-chess-games
+        AttributeDefinitions:
+          - AttributeName: gameId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: gameId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    publicQueue:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: merge-chess-public-queue
+        AttributeDefinitions:
+          - AttributeName: gameId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: gameId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    privateQueue:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: merge-chess-private-queue
+        AttributeDefinitions:
+          - AttributeName: gameId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: gameId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+
+plugins:
+  - serverless-domain-manager # https://www.serverless.com/blog/serverless-api-gateway-domain/
+  - serverless-offline # https://www.serverless.com/plugins/serverless-offline
+
+custom:
+  customDomain:
+    domainName: 'merge-chess-api.theftofaduck.com'
+    certificateName : '*.theftofaduck.com'
+    createRoute53Record: true
+    endpointType: 'regional'
+    autoDomain: true
+  serverless-offline:
+    httpPort: 3001 # TODO - Set up CORS
