@@ -2,6 +2,7 @@ version: '3'
 
 services:
   dynamodb:
+    container_name: dynamodb
     image: amazon/dynamodb-local
     # Default command needs to be overwritten, to persist the data to "disk", which can be mounted to a volume
     command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
