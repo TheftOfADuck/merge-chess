@@ -2,10 +2,6 @@ import React from "react"
 
 class NewGameWidget extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     queueGame = (event) => {
         event.preventDefault()
         let colourChoice = [...event.target].filter(x => x.name === "colour").filter(x => x.checked)[0].value

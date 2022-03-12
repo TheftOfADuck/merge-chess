@@ -1,13 +1,17 @@
-import {DeleteItemCommand, DynamoDBClient, PutItemCommand} from "@aws-sdk/client-dynamodb"
-import {marshall} from "@aws-sdk/util-dynamodb"
-import randomWords from "random-words"
+const {DeleteItemCommand, DynamoDBClient, PutItemCommand} = require("@aws-sdk/client-dynamodb")
+const {marshall} = require("@aws-sdk/util-dynamodb")
+const randomWords = require("random-words")
 
-import {ValidMovesHelper} from "shared/src/validMovesHelper.js"
-import {gamesTableName, privateQueueTableName, publicQueueTableName} from "shared/src/constants.js";
+const {ValidMovesHelper} = require("shared/src/validMovesHelper.js")
+const {gamesTableName, privateQueueTableName, publicQueueTableName} = require("shared/src/constants.js")
 
 
-export async function queueNewGame(playerId, allowWhiteOpponents, allowBlackOpponents, isPrivate) {
-    const client = new DynamoDBClient({region: "eu-west-2"})
+async function queueNewGame(playerId, allowWhiteOpponents, allowBlackOpponents, isPrivate) {
+    let clientConfig = {region: "eu-west-2"}
+    if (process.env.AWS_DYNAMODB_ENDPOINT) {
+        clientConfig.endpoint = process.env.AWS_DYNAMODB_ENDPOINT
+    }
+    const client = new DynamoDBClient(clientConfig)
     const queueTable = isPrivate ? privateQueueTableName : publicQueueTableName
 
     let newGameId = randomWords({exactly: 5, join: "-"})
@@ -28,8 +32,12 @@ export async function queueNewGame(playerId, allowWhiteOpponents, allowBlackOppo
     return newGameId
 }
 
-export async function startQueuedGame(secondPlayerId, playerColour, queuedItem, isPrivate) {
-    const client = new DynamoDBClient({region: "eu-west-2"})
+async function startQueuedGame(secondPlayerId, playerColour, queuedItem, isPrivate) {
+    let clientConfig = {region: "eu-west-2"}
+    if (process.env.AWS_DYNAMODB_ENDPOINT) {
+        clientConfig.endpoint = process.env.AWS_DYNAMODB_ENDPOINT
+    }
+    const client = new DynamoDBClient(clientConfig)
     const queueTable = isPrivate ? privateQueueTableName : publicQueueTableName
 
     // Decide how to assign the white and black colours
@@ -63,4 +71,9 @@ export async function startQueuedGame(secondPlayerId, playerColour, queuedItem, 
     }))
 
     return newGame.gameId
+}
+
+module.exports = {
+    queueNewGame: queueNewGame,
+    startQueuedGame: startQueuedGame
 }

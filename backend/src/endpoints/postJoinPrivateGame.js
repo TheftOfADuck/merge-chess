@@ -1,11 +1,11 @@
-import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb"
-import {marshall, unmarshall} from "@aws-sdk/util-dynamodb"
+const {GetItemCommand} = require("@aws-sdk/client-dynamodb")
+const {marshall, unmarshall} = require("@aws-sdk/util-dynamodb")
 
-import {startQueuedGame} from "../shared/gameHelper.js"
-import {corsHeaders} from "../shared/constants.js"
-import {gamesTableName, privateQueueTableName} from "shared/src/constants.js";
+const {startQueuedGame} = require("../gameQueuer.js")
+const {corsHeaders, gamesTableName, privateQueueTableName} = require("shared/src/constants.js")
+const {dynamodbClient} = require("../aws_clients");
 
-export async function lambdaHandler(event) {
+async function lambdaHandler(event) {
     let gameId = event.pathParameters.gameId
     let requestBody = JSON.parse(event.body)
     let response = await postJoinPrivateGame(requestBody.playerId, requestBody.playerColour, gameId)
@@ -16,17 +16,15 @@ export async function lambdaHandler(event) {
     };
 }
 
-export async function postJoinPrivateGame(secondPlayerId, playerColour, gameId) {
-    const client = new DynamoDBClient({region: "eu-west-2"})
-
-    let getQueueResults = await client.send(new GetItemCommand({
+async function postJoinPrivateGame(secondPlayerId, playerColour, gameId) {
+    let getQueueResults = await dynamodbClient.send(new GetItemCommand({
         TableName: privateQueueTableName,
         Key: marshall({gameId: gameId})
     }))
 
     if (!getQueueResults.Item) {
         // Check the active games table. Allows players to rejoin existing games by refreshing the page
-        let getGameResults = await client.send(new GetItemCommand({
+        let getGameResults = await dynamodbClient.send(new GetItemCommand({
             TableName: gamesTableName,
             Key: marshall({gameId: gameId})
         }))
@@ -52,4 +50,8 @@ export async function postJoinPrivateGame(secondPlayerId, playerColour, gameId) 
         statusCode: 200,
         responseBody: {gameId: gameId}
     }
+}
+
+module.exports = {
+    lambdaHandler: lambdaHandler
 }
