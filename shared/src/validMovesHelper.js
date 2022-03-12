@@ -1,4 +1,4 @@
-export class ValidMovesHelper {
+class ValidMovesHelper {
 
     static defaultGameState = {
         startDate: new Date().toLocaleDateString(),
@@ -404,4 +404,8 @@ export class ValidMovesHelper {
         }
         return true
     }
+}
+
+module.exports = {
+    ValidMovesHelper: ValidMovesHelper
 }

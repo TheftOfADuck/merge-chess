@@ -129,8 +129,9 @@ resources:
 
 
 plugins:
-  - serverless-domain-manager # https://www.serverless.com/blog/serverless-api-gateway-domain/
+  - serverless-domain-manager # https://www.serverless.com/blog/serverless-api-gateway-domain
   - serverless-offline # https://www.serverless.com/plugins/serverless-offline
+  - serverless-dotenv-plugin # https://www.serverless.com/plugins/serverless-dotenv-plugin
 
 custom:
   customDomain:

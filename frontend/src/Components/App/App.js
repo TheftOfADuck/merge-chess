@@ -30,8 +30,9 @@ class App extends React.Component {
     }
 
     makApiCall = (endpoint, body) => {
-        console.log(`Requesting ${endpoint} with:`, body)
-        fetch(`https://${appName}-api.theftofaduck.com/${endpoint}`, {
+        let hostName = process.env.REACT_APP_API_HOSTNAME || `https://${appName}-api.theftofaduck.com`
+        console.log(`Requesting ${hostName}/${endpoint} with:`, body)
+        fetch(`${hostName}/${endpoint}`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -64,7 +65,8 @@ class App extends React.Component {
     }
 
     getGameState = () => {
-        fetch(`https://${appName}-api.theftofaduck.com/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
+        let hostName = process.env.REACT_APP_API_HOSTNAME || `https://${appName}-api.theftofaduck.com`
+        fetch(`${hostName}/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
             .then(result => result.json())
             .then(result => this.updateState(result)) // TODO - Fix rubber banding caused by old state from backend being applied
     }
