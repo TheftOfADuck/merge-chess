@@ -1,11 +1,11 @@
-import {DynamoDBClient, ScanCommand} from "@aws-sdk/client-dynamodb"
-import {unmarshall} from "@aws-sdk/util-dynamodb"
+const {ScanCommand} = require("@aws-sdk/client-dynamodb")
+const {unmarshall} = require("@aws-sdk/util-dynamodb")
 
-import {queueNewGame, startQueuedGame} from "../shared/gameHelper.js"
-import {corsHeaders} from "../shared/constants.js"
-import {publicQueueTableName} from "shared/src/constants.js";
+const {queueNewGame, startQueuedGame} = require("../gameQueuer.js")
+const {corsHeaders, publicQueueTableName} = require("shared/src/constants.js")
+const {dynamodbClient} = require("../aws_clients");
 
-export async function lambdaHandler(event) {
+async function lambdaHandler(event) {
     let requestBody = JSON.parse(event.body)
     let response = await postStartPublicGame(requestBody.playerId, requestBody.playerColour)
     return {
@@ -15,13 +15,12 @@ export async function lambdaHandler(event) {
     };
 }
 
-export async function postStartPublicGame(playerId, playerColour) {
+async function postStartPublicGame(playerId, playerColour) {
     let allowWhiteOpponents = playerColour === "either" || playerColour === "black"
     let allowBlackOpponents = playerColour === "either" || playerColour === "white"
-    const client = new DynamoDBClient({region: "eu-west-2"})
 
     // TODO - Make this a query rather than scan
-    let scanResults = await client.send(new ScanCommand({TableName: publicQueueTableName}))
+    let scanResults = await dynamodbClient.send(new ScanCommand({TableName: publicQueueTableName}))
     if (scanResults.Count === 0) { // Nothing in the queue matching player requirements. Queue a new game
         let newGameId = await queueNewGame(playerId, allowWhiteOpponents, allowBlackOpponents, false)
         return {
@@ -50,4 +49,8 @@ export async function postStartPublicGame(playerId, playerColour) {
             responseBody: {gameId: newGameId}
         }
     }
+}
+
+module.exports = {
+    lambdaHandler: lambdaHandler
 }
