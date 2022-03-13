@@ -68,16 +68,24 @@ class App extends React.Component {
         let hostName = process.env.REACT_APP_API_HOSTNAME || `https://${appName}-api.theftofaduck.com`
         fetch(`${hostName}/game/${this.state.gameId}/state?playerId=${this.state.playerId}`)
             .then(result => result.json())
-            .then(result => this.updateState(result)) // TODO - Fix rubber banding caused by old state from backend being applied
+            .then(result => {
+                // Only update state if the backend is ahead of the frontend. Prevents rubber-banding whilst the backend is updating
+                if (this.state.playerColour === null
+                    || result.turnNumber > this.state.turnNumber
+                    || (result.turnNumber === this.state.turnNumber && result.turnColour !== this.state.turnColour)) {
+                    this.updateState(result)
+                }
+            })
     }
 
     componentDidMount = () => {
-        // Poll the backend for current game state
+        // Poll the backend for current game state, only when a game isn't started, or it's the opponent's turn
         this.statePollProcess = setInterval(() => {
-            if (this.state.gameId !== null) {
+            if ((this.state.gameId !== null && this.state.playerColour === null)
+                || (this.state.gameId !== null && this.state.playerColour !== this.state.turnColour)) {
                 this.getGameState()
             }
-        }, 400)
+        }, 1000)
     }
 
     componentWillUnmount = () => {
